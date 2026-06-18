@@ -39,7 +39,7 @@
 
 ## About
 
-I'm Andrew Diola, an aspiring SOC Analyst building hands-on detection and response skills outside the classroom. [Add 2–3 sentences: your background before this lab, what drew you to security, and the type of role you're targeting.]
+I'm Andrew Diola, an aspiring SOC Analyst building hands-on detection and response skills outside the classroom. With a solid foundational background in IT support and networking, I’ve always been fascinated by how adversaries exploit system vulnerabilities. This curiosity drove me to transition into cybersecurity, where I can actively defend digital assets. I am currently targeting an entry-level SOC Analyst role where I can apply my investigative mindset and help organizations mitigate real-time threats.
 
 **Lab stack:** Splunk Enterprise · BOTSv2 Dataset · Wireshark · Kali Linux · [Honeypot tool] · [Ticketing platform]
 
