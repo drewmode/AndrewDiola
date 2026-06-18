@@ -49,7 +49,7 @@ index=botsv2 [search terms]
 ## Dashboard
 
 ![Dashboard screenshot](./screenshots/dashboard-overview.png)
-This is a Splunk Enterprise security dashboard titled "BOTSv2 Security Cyber Threat Monitoring" that visualizes nearly 69 million security events from the BOTS v2 dataset to analyze the geographical origins, timeline spikes, and top source IPs of external web traffic and cyber attacks.
+*This is a Splunk Enterprise security dashboard titled "BOTSv2 Security Cyber Threat Monitoring" that visualizes nearly 69 million security events from the BOTS v2 dataset to analyze the geographical origins, timeline spikes, and top source IPs of external web traffic and cyber attacks.*
 
 ## Skills Demonstrated
 
