@@ -63,4 +63,15 @@ index=botsv2 [search terms]
 
 ## Reflection
 
-[1–3 sentences: what was the hardest part of this case, and what would you do differently with more time? This section shows judgment, not just task completion — it's often what recruiters remember.]
+Project Reflection: BOTSv2 Security Threat Monitoring Dashboard
+This project successfully transformed nearly 69 million raw log events from the BOTS v2 dataset into a centralized, actionable security intelligence dashboard. By designing and implementing tailored SPL queries across multiple data sources—including HTTP streams, network traffic, and threat intelligence filters—the dashboard effectively bridges the gap between geographic visibility and chronological behavioral analysis.
+
+Key Achievements & Insights:
+
+- Geospatial & Trend Alignment: Integrating geostats cluster maps alongside timechart visualizations made it possible to instantly correlate where traffic originates with when anomalous spikes occur. The high-volume spikes detected on August 11 and August 30 serve as prime examples of how automated adversarial behavior shifts over time.
+
+- Targeted Threat Isolation: The implementation of specific threat-hunting filters successfully isolated high-risk indicators, pinpointing malicious traffic (such as the scanning activity from 45.77.65.211) down to specific geographic regions and tracking its operational volume against baseline internal traffic (172.31.10.10).
+
+- Operational Readiness: Visualizing tactical data points like HTTP status code distributions and top-talking source IPs provides a comprehensive security posture overview. This layout significantly reduces the time to detect and triage potential web application scans, brute-force attempts, or data exfiltration events.
+
+Ultimately, this project highlights the power of Splunk Enterprise in processing massive datasets to deliver clear, scannable, and actionable insights. It provides analysts with a dual-lens capability—simultaneously tracking high-level global trends and granular, entity-specific malicious behavior on a single pane of glass.
