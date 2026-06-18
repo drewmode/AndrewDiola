@@ -1,6 +1,6 @@
 <!--
   BEFORE PUBLISHING, replace every bracketed placeholder:
-  [Your Name], [your.email@example.com], [linkedin.com/in/you], [github.com/you],
+  Andrew Diola, diolaandrew@gmail.com, www.linkedin.com/in/andrewdiola, [github.com/you],
   [Honeypot tool], [Ticketing platform], [Year]
   Also swap the italic "e.g." notes inside each case for what you actually did,
   and adjust the 15-Day Timeline to match your real schedule.
