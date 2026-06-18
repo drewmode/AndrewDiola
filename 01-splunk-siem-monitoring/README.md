@@ -42,9 +42,12 @@ index=botsv2 [search terms]
 
 ## Findings
 
-- [Finding 1 — what you found and why it mattered, e.g., "Identified a spike in failed authentication attempts against a single account over a 10-minute window."]
-- [Finding 2]
-- [Finding 3]
+- Total Events: A massive volume of 68,870,348 total events are being processed, indicating high-density log collection across the environment.
+- Map of Public IP Web Traffic: Public web traffic is distributed globally, with the largest concentration of activity originating from Europe, followed by clusters in North America and parts of Asia.
+- Map of Specific Malicious IPs: The threat-hunting filter successfully isolates suspicious activity to a single localized geographic region in Northern Europe/Scandinavia.
+- Web Traffic Over Time by HTTP Method: Traffic is predominantly driven by standard GET requests, but it experiences two distinct anomaly spikes—a sharp, sudden spike around August 11 and a more sustained, aggressive surge around August 30.
+- HTTP Status Codes: The overwhelming majority of requests resulted in successful 200 OK responses, though a small sliver of error and redirect codes (301, 302, 404, 412, 468) are present.
+- Top Source IPs Bar Chart: Two dominant IP addresses (172.31.10.10 and 45.77.65.211) are driving the highest traffic volume, each responsible for approximately 9,500 events, making them the primary subjects for further investigation.
 
 ## Dashboard
 
