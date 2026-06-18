@@ -6,7 +6,7 @@
   and adjust the 15-Day Timeline to match your real schedule.
 -->
 
-# 🛡️ [Your Name] — SOC Analyst Portfolio
+# 🛡️ Andrew Diola — SOC Analyst Portfolio
 
 **15-day self-directed training lab:** SIEM threat detection, network forensics, honeypot threat intelligence, and incident response.
 
