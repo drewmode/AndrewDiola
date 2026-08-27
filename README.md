@@ -167,7 +167,7 @@ soc-analyst-portfolio/
 
 - **Email:** diolaandrew@gmail.com
 - **LinkedIn:** (add your LinkedIn URL)
-- **GitHub:** https://github.com/yan-brrd
+- **GitHub:** https://github.com/drewmode/AndrewDiola
 
 ---
 *Built as part of a 15-day self-directed SOC training lab. © 2026 Adrian Gian Barredo.*
