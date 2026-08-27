@@ -3,7 +3,7 @@
   Placeholders replaced with values from index.html where available.
 -->
 
-# 🛡️ Adrian Gian Barredo — SOC Analyst Portfolio
+# 🛡️ Andrew A. Diola — SOC Analyst Portfolio
 
 **15-day self-directed training lab:** SIEM threat detection, network forensics, honeypot threat intelligence, and incident response.
 
@@ -36,7 +36,7 @@
 
 ## About
 
-I'm **Adrian Gian Barredo**, an aspiring SOC Analyst building hands-on detection and response skills outside the classroom. Over 15 intensive days I set up a home lab to practice real SOC workflows and tooling.
+I'm **Andrew Diola**, an aspiring SOC Analyst building hands-on detection and response skills outside the classroom. Over 15 intensive days I set up a home lab to practice real SOC workflows and tooling.
 
 **Lab stack:** Splunk Enterprise · BOTSv2 Dataset · Wireshark · Kali Linux · Cowrie honeypot · sample ticketing / incident reporting workflow
 
@@ -165,7 +165,7 @@ soc-analyst-portfolio/
 
 ## Contact
 
-- **Email:** agpbarredo@gmail.com
+- **Email:** diolaandrew@gmail.com
 - **LinkedIn:** (add your LinkedIn URL)
 - **GitHub:** https://github.com/yan-brrd
 
