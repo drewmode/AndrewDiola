@@ -15,7 +15,7 @@
 
 > A home lab project built to practice the full lifecycle of a security incident — from raw packet capture to a written report — using the same categories of tooling found in real SOC environments.
 
-🔗 **Live site:** https://github.com/drewmode/AndrewDiola
+🔗 **Live site:** https://drewmode.github.io/AndrewDiola/
 
 ---
 
