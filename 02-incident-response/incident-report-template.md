@@ -52,4 +52,3 @@ The following incident reports were written from higher-priority tickets:
 ## Reflection
 
 The hardest part of triage was distinguishing between P2 and P3 findings—knowing when circumstantial evidence was "strong enough" to warrant urgent action versus waiting for more data required balancing risk tolerance, team bandwidth, and stakeholder expectations. Over-alerting creates fatigue; under-alerting risks missing true incidents.
-
