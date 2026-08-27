@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>CASE-002 · Incident Response — Andrew Diola</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0e27;
+      --bg-panel: #0f1536;
+      --bg-panel-raised: #151d42;
+      --border: #1a2555;
+      --text: #e0e8ff;
+      --text-muted: #a0aee8;
+      --text-dim: #6b7aa8;
+      --neon-pink: #ff006e;
+      --neon-cyan: #00f5ff;
+      --neon-purple: #b500ff;
+      --neon-orange: #ff6b35;
+      --neon-blue: #0080ff;
+      --neon-green: #39ff14;
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --container: 860px;
+      --accent: #667eea;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; background: var(--bg); }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: var(--font-body); line-height: 1.7;
+      -webkit-font-smoothing: antialiased; overflow-x: hidden;
+    }
+    body::before {
+      content: "";
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background-image:
+        linear-gradient(rgba(0,245,255,0.016) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,245,255,0.016) 1px, transparent 1px);
+      background-size: 44px 44px;
+      pointer-events: none; z-index: 0;
+    }
+    a { color: inherit; text-decoration: none; }
+    .wrap { max-width: var(--container); margin: 0 auto; padding: 0 32px; position: relative; z-index: 2; }
+
+    .topbar {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(10,14,39,0.9); backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(0,245,255,0.15);
+    }
+    .topbar .wrap {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 13px 32px;
+    }
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.07em;
+      color: var(--neon-cyan); text-transform: uppercase;
+      transition: gap 0.2s;
+    }
+    .back-btn:hover { gap: 12px; }
+    .breadcrumb {
+      font-family: var(--font-mono); font-size: 0.7rem;
+      color: var(--text-dim); letter-spacing: 0.05em;
+    }
+    .breadcrumb span { color: var(--neon-cyan); }
+
+    .case-hero {
+      padding: 72px 0 56px; border-bottom: 1px solid rgba(26,37,85,0.7);
+      position: relative;
+    }
+    .case-hero::after {
+      content: "";
+      position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--neon-cyan), var(--neon-purple), transparent);
+      opacity: 0.4;
+    }
+    .hero-eyebrow { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+    .case-badge {
+      font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--neon-pink); background: rgba(255,0,110,0.1);
+      border: 1px solid rgba(255,0,110,0.35); border-radius: 20px; padding: 4px 14px;
+    }
+    .status-badge {
+      font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--neon-green);
+      background: rgba(57,255,20,0.08); border: 1px solid rgba(57,255,20,0.25);
+      border-radius: 20px; padding: 4px 12px;
+      display: inline-flex; align-items: center; gap: 7px;
+    }
+    .s-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--neon-green); box-shadow: 0 0 8px var(--neon-green);
+      animation: blink 2s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .case-hero h1 {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: clamp(2rem, 4.5vw, 3rem); line-height: 1.2;
+      color: var(--text); margin-bottom: 20px;
+    }
+    .case-hero h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, #667eea, #00f5ff);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .case-hero .sub { color: var(--text-muted); font-size: 1rem; max-width: 600px; margin-bottom: 32px; }
+    .hero-meta { display: flex; flex-wrap: wrap; gap: 10px; }
+    .meta-tag {
+      font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.06em;
+      color: var(--text-muted); background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(0,245,255,0.15); border-radius: 8px; padding: 6px 14px;
+    }
+    .meta-tag strong { color: var(--neon-cyan); }
+
+    .case-body { padding: 64px 0 80px; }
+    .case-section { margin-bottom: 64px; }
+    .section-label {
+      font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--neon-pink); margin-bottom: 10px;
+    }
+    .section-title {
+      font-family: var(--font-display); font-size: 1.5rem; font-weight: 700;
+      color: var(--text); margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(0,245,255,0.12);
+    }
+    .body-text { color: var(--text-muted); font-size: 0.97rem; line-height: 1.8; margin-bottom: 14px; }
+    .body-text strong { color: var(--text); font-weight: 600; }
+    .body-text code {
+      font-family: var(--font-mono); font-size: 0.85em;
+      color: var(--neon-cyan); background: rgba(0,245,255,0.08);
+      border: 1px solid rgba(0,245,255,0.15); border-radius: 5px; padding: 1px 6px;
+    }
+
+    .data-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+    .data-table th {
+      font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--neon-cyan);
+      background: rgba(0,245,255,0.06); border-bottom: 1px solid rgba(0,245,255,0.2);
+      padding: 12px 16px; text-align: left;
+    }
+    .data-table td {
+      padding: 11px 16px; font-size: 0.9rem; color: var(--text-muted);
+      border-bottom: 1px solid rgba(0,245,255,0.06);
+    }
+    .data-table td:first-child { color: var(--text); font-weight: 500; }
+    .data-table tr:hover td { background: rgba(0,245,255,0.03); }
+    .data-table code {
+      font-family: var(--font-mono); font-size: 0.82em;
+      color: var(--neon-orange); background: rgba(255,107,53,0.08);
+      border: 1px solid rgba(255,107,53,0.2); border-radius: 5px; padding: 1px 6px;
+    }
+
+    .steps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
+    .step-card {
+      background: rgba(15,21,54,0.7); border: 1px solid rgba(0,245,255,0.15);
+      border-radius: 16px; padding: 22px;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+    }
+    .step-card:hover {
+      border-color: var(--neon-cyan); box-shadow: 0 0 20px rgba(0,245,255,0.12);
+      transform: translateY(-3px);
+    }
+    .step-num {
+      font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.1em;
+      color: var(--neon-pink); text-transform: uppercase; margin-bottom: 8px;
+    }
+    .step-card h4 { font-family: var(--font-display); font-size: 0.98rem; color: var(--text); margin-bottom: 8px; }
+    .step-card p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.65; }
+
+    .code-wrap {
+      background: rgba(8,12,30,0.9); border: 1px solid rgba(0,245,255,0.15);
+      border-radius: 14px; overflow: hidden; margin: 20px 0;
+    }
+    .code-header {
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(0,245,255,0.05); border-bottom: 1px solid rgba(0,245,255,0.1);
+      padding: 10px 18px;
+    }
+    .code-dots { display: flex; gap: 6px; }
+    .code-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .cd-r { background: #ff5f57; } .cd-y { background: #febc2e; } .cd-g { background: #28c840; }
+    .code-lang {
+      font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--neon-cyan); opacity: 0.7;
+    }
+    .code-body {
+      padding: 20px; font-family: var(--font-mono); font-size: 0.85rem;
+      color: #c8d8ff; line-height: 1.6; overflow-x: auto;
+      white-space: pre;
+    }
+    .code-comment { color: #4a5580; }
+    .code-pipe { color: var(--neon-pink); }
+    .code-cmd { color: var(--neon-cyan); }
+    .code-str { color: var(--neon-orange); }
+
+    .findings-list { display: flex; flex-direction: column; gap: 14px; margin: 20px 0; }
+    .finding-item {
+      display: flex; gap: 16px;
+      background: rgba(15,21,54,0.6); border: 1px solid rgba(0,245,255,0.12);
+      border-radius: 12px; padding: 18px 20px;
+      transition: border-color 0.2s;
+    }
+    .finding-item:hover { border-color: rgba(0,245,255,0.3); }
+    .finding-bullet {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--neon-cyan); box-shadow: 0 0 8px var(--neon-cyan);
+      flex-shrink: 0; margin-top: 6px;
+    }
+    .finding-text { font-size: 0.93rem; color: var(--text-muted); line-height: 1.7; }
+    .finding-text strong { color: var(--text); }
+    .finding-text code {
+      font-family: var(--font-mono); font-size: 0.83em;
+      color: var(--neon-orange); background: rgba(255,107,53,0.08);
+      border: 1px solid rgba(255,107,53,0.2); border-radius: 4px; padding: 1px 6px;
+    }
+
+    .screenshot-box {
+      background: rgba(15,21,54,0.5); border: 1px solid rgba(0,245,255,0.15);
+      border-radius: 16px; overflow: hidden; margin: 20px 0;
+    }
+    .screenshot-bar {
+      background: rgba(0,245,255,0.05); border-bottom: 1px solid rgba(0,245,255,0.1);
+      padding: 10px 18px; display: flex; align-items: center; gap: 8px;
+    }
+    .screenshot-box img { width: 100%; display: block; }
+    .screenshot-caption {
+      padding: 12px 18px; font-family: var(--font-mono); font-size: 0.72rem;
+      color: var(--text-dim); letter-spacing: 0.04em;
+      border-top: 1px solid rgba(0,245,255,0.08);
+    }
+
+    .skills-wrap { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0; }
+    .skill-pill {
+      font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.06em;
+      color: var(--neon-orange); background: rgba(255,107,53,0.1);
+      border: 1px solid rgba(255,107,53,0.3); border-radius: 20px; padding: 5px 14px;
+    }
+
+    .reflection-card {
+      background: linear-gradient(135deg, rgba(102,126,234,0.08) 0%, rgba(0,245,255,0.05) 100%);
+      border: 1px solid rgba(102,126,234,0.25); border-radius: 16px; padding: 28px 30px;
+    }
+    .reflection-card p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.8; margin-bottom: 14px; }
+    .reflection-card p:last-child { margin-bottom: 0; }
+    .reflection-card code {
+      font-family: var(--font-mono); font-size: 0.85em;
+      color: var(--neon-cyan); background: rgba(0,245,255,0.08);
+      border: 1px solid rgba(0,245,255,0.15); border-radius: 5px; padding: 1px 6px;
+    }
+
+    .case-footer {
+      border-top: 1px solid rgba(26,37,85,0.7); padding: 36px 0;
+      text-align: center; position: relative; z-index: 2;
+    }
+    .case-footer p { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim); margin-top: 10px; }
+    .footer-back {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--neon-cyan);
+      background: rgba(0,245,255,0.06); border: 1px solid rgba(0,245,255,0.25);
+      border-radius: 10px; padding: 10px 22px; margin-bottom: 18px;
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+    .footer-back:hover { background: rgba(0,245,255,0.1); box-shadow: 0 0 18px rgba(0,245,255,0.15); }
+
+    @media (max-width: 680px) {
+      .steps-grid { grid-template-columns: 1fr; }
+      .case-hero h1 { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="wrap">
+      <a class="back-btn" href="../index.html">← Back</a>
+      <span class="breadcrumb">SOC::LAB / <span>CASE-002</span></span>
+    </div>
+  </div>
+
+  <header class="case-hero">
+    <div class="wrap">
+      <div class="hero-eyebrow">
+        <span class="case-badge">CASE-002</span>
+        <span class="status-badge"><span class="s-dot"></span>Documented</span>
+      </div>
+      <h1>Incident Triage, Ticketing<br><em>& Reporting</em></h1>
+      <p class="sub">Practicing the part of SOC work that happens after detection — deciding what matters, tracking it, and writing it up the way a real analyst hands a case off to the next shift.</p>
+      <div class="hero-meta">
+        <span class="meta-tag"><strong>Category</strong> · Incident Response</span>
+        <span class="meta-tag"><strong>Tools</strong> · Ticketing Workflow, Incident Report Templates</span>
+        <span class="meta-tag"><strong>Kill Chain</strong> · Detection → Escalation → Closure</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="case-body">
+    <div class="wrap">
+
+      <div class="case-section">
+        <div class="section-label">// 01</div>
+        <div class="section-title">Overview</div>
+        <p class="body-text">This case picks up where CASE-001 left off. A dashboard full of alerts means nothing if there's no process behind it — so this lab focused on the workflow that turns a raw detection into a tracked, resolved incident.</p>
+        <p class="body-text">The goal was to practice the judgment calls a Tier 1 analyst makes daily: which alerts deserve a ticket, how to prioritize a stack of open cases, and how to write a report that's useful to whoever picks it up next.</p>
+      </div>
+
+      <div class="case-section">
+        <div class="section-label">// 02</div>
+        <div class="section-title">Workflow Setup</div>
+        <table class="data-table">
+          <thead>
+            <tr><th>Component</th><th>Detail</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Source of Alerts</td><td>Findings from CASE-001 Splunk dashboards</td></tr>
+            <tr><td>Ticket Fields</td><td><code>severity</code>, <code>priority</code>, <code>status</code>, <code>assigned_to</code></td></tr>
+            <tr><td>Priority Model</td><td>Asset criticality × likelihood × business impact</td></tr>
+            <tr><td>Report Format</td><td>Summary → Timeline → IOCs → Remediation</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="case-section">
+        <div class="section-label">// 03</div>
+        <div class="section-title">Methodology</div>
+        <div class="steps-grid">
+          <div class="step-card">
+            <div class="step-num">Step 01</div>
+            <h4>Convert Alerts to Tickets</h4>
+            <p>Took the findings surfaced in CASE-001 and logged each one as a discrete ticket instead of a one-off search result.</p>
+          </div>
+          <div class="step-card">
+            <div class="step-num">Step 02</div>
+            <h4>Triage & Prioritize</h4>
+            <p>Scored each ticket by asset criticality, likelihood of compromise, and potential business impact — not just alert volume.</p>
+          </div>
+          <div class="step-card">
+            <div class="step-num">Step 03</div>
+            <h4>Write Incident Reports</h4>
+            <p>For the highest-priority tickets, wrote structured reports: what happened, when, what indicators were involved, and what to do next.</p>
+          </div>
+          <div class="step-card">
+            <div class="step-num">Step 04</div>
+            <h4>Hand-Off Simulation</h4>
+            <p>Reviewed each report as if a different analyst had to pick it up cold — checking it made sense without extra context.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="case-section">
+        <div class="section-label">// 04</div>
+        <div class="section-title">Sample Ticket</div>
+        <div class="code-wrap">
+          <div class="code-header">
+            <div class="code-dots"><div class="code-dot cd-r"></div><div class="code-dot cd-y"></div><div class="code-dot cd-g"></div></div>
+            <span class="code-lang">TICKET</span>
+          </div>
+          <div class="code-body">ID:        INC-0007
+Severity:  High
+Priority:  P2
+Source:    Splunk dashboard — anomalous auth spike
+Status:    Resolved
+Summary:   Repeated failed logins from a single external IP
+           against an internal service account, followed by
+           one successful authentication.</div>
+        </div>
+      </div>
+
+      <div class="case-section">
+        <div class="section-label">// 05</div>
+        <div class="section-title">Key Findings</div>
+        <div class="findings-list">
+          <div class="finding-item">
+            <div class="finding-bullet"></div>
+            <div class="finding-text"><strong>Not all alerts deserve equal attention:</strong> applying a consistent priority model surfaced a small number of tickets that mattered far more than raw alert count suggested.</div>
+          </div>
+          <div class="finding-item">
+            <div class="finding-bullet"></div>
+            <div class="finding-text"><strong>Documentation is a deliverable:</strong> a technically correct finding is only useful if the write-up lets the next analyst act on it without re-doing the investigation.</div>
+          </div>
+          <div class="finding-item">
+            <div class="finding-bullet"></div>
+            <div class="finding-text"><strong>Triage is a skill, not a formality:</strong> consistently applying the same criteria to every ticket made prioritization faster and more defensible over time.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="case-section">
+        <div class="section-label">// 06</div>
+        <div class="section-title">Evidence</div>
+        <div class="screenshot-box">
+          <div class="screenshot-bar">
+            <div class="code-dots"><div class="code-dot cd-r"></div><div class="code-dot cd-y"></div><div class="code-dot cd-g"></div></div>
+            <span style="font-family:var(--font-mono);font-size:0.68rem;color:var(--text-dim);margin-left:8px;">ticketing · queue-view</span>
+          </div>
+          <img src="./screenshots/ticket-queue.png" alt="Ticket queue showing triaged incidents by priority and status">
+          <div class="screenshot-caption">📋 Ticket queue — open, in-progress, and resolved incidents sorted by priority.</div>
+        </div>
+      </div>
+
+      <div class="case-section">
+        <div class="section-label">// 07</div>
+        <div class="section-title">Skills Demonstrated</div>
+        <div class="skills-wrap">
+          <span class="skill-pill">Alert Triage</span>
+          <span class="skill-pill">Prioritization</span>
+          <span class="skill-pill">Ticketing Workflows</span>
+          <span class="skill-pill">Incident Reporting</span>
+          <span class="skill-pill">Stakeholder Communication</span>
+        </div>
+      </div>
+
+      <div class="case-section">
+        <div class="section-label">// 08</div>
+        <div class="section-title">Reflection</div>
+        <div class="reflection-card">
+          <p>The hardest part of this case wasn't writing the reports — it was resisting the urge to treat every alert as equally urgent. Building a consistent priority model forced me to slow down and actually think about impact instead of just reacting to volume.</p>
+          <p>I came away from this with a much better sense of why documentation is treated as a first-class deliverable in a SOC, not an afterthought. A finding nobody can act on isn't really a finding — it's just noise with extra steps.</p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="case-footer">
+    <div class="wrap">
+      <a class="footer-back" href="../index.html">← Back to Portfolio</a>
+      <p>© 2026 · Andrew Diola · <a href="https://drewmode.github.io/AndrewDiola/" style="color:var(--neon-cyan);">drewmode.github.io/AndrewDiola/</a></p>
+    </div>
+  </footer>
+
+</body>
+</html>
